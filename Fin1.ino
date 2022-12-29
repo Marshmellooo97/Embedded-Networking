@@ -74,9 +74,9 @@ void loop() {
       xAutoOrManuell = false;                                   //falls Command = 21 sind wir im Manuellen Modus(xAutoOrManuell = false)
     }
     if (InfrarotsensorValue == 28) {                            //überprüft ob der Command = 28 ist 
-      serv.write(10);                                           //falls ja write()-Funktion, verwendet um Daten an ein serielles Gerät zu senden(Hier Wert 10)
+      serv.write(10);                                           //falls ja write()-Funktion, verwendet um Daten an ein serielles Gerät zu senden(Hier Wert 10)(rotiere um 10°)
     } else {                                                    //falls der Command nicht 28 ist 
-      serv.write(90);                                           //wird 90 an das serielle Gerät gesendet
+      serv.write(90);                                           //wird 90 an das serielle Gerät gesendet(rotiere um 90°)
     }
     if (xAutoOrManuell == false){                               //überprüft ob wir uns im Manuellen Modus Befinden falls ja
       if (InfrarotsensorValue == 67) {                          //prüft ob der Command 67 ist (von IrReceiver.decodedIRData.command)
@@ -109,17 +109,17 @@ void loop() {
   
   // Türverrigelung
 
-  // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
+  // Setz die Schleife zurück, wenn keine neue Karte am Sensor/Lesegerät vorhanden ist. Dies speichert gesamten Vorgang im Leerlauf.
   if ( ! mfrc522.PICC_IsNewCardPresent()) {
     return;
   }
 
-  // Select one of the cards
+  // Wählt eine Karte aus
   if ( ! mfrc522.PICC_ReadCardSerial()) {
     return;
   }
 
-  //build the UUID into workable string
+  // Wandelt die UUID in einen verarbeitbaren String um
   String content= "";
   byte letter;
   for (byte i = 0; i <   mfrc522.uid.size; i++) 
@@ -132,17 +132,17 @@ void loop() {
   Serial.print("Message : ");
   content.toUpperCase();
 
-  mfrc522.PICC_DumpToSerial(&(mfrc522.uid));  //only for getting UUID from chip, UUID for allowed chip needs to get hardcoded in next if statement
-
-  //check if UUID is allowed
-  if (content.substring(1) == "E6 7B B6 F9") //change here the UID of the card/cards that you want to give access
-  {
+  mfrc522.PICC_DumpToSerial(&(mfrc522.uid));  //Nur um die UUID vom Chip zu erhalten, muss die UUID für den zulässigen Chip in der nächsten if-Anweisung fest codiert werden
+                                              
+  //prüfung ob die UUID befugt ist
+  if (content.substring(1) == "E6 7B B6 F9")  //Hier die UID ändern um einer oder mehrer Karten Zugang zu gewähren
+  {                                          
     if (servstat == false) {
-        serv.write(180);                //if door is closed, servo rotates 180° and frees door
-        servstat = true;
+        serv.write(180);                      //wenn die Tür geschlossen ist Rotiert der servo um 180° und löst die Verriegelung
+        servstat = true;                      //variable servstat wird auf true gesetzt für Tür offen
     }else{
-        serv.write(0);                  //if door is opened, door will close (Door mechanism needs to be closed manually)
-        servstat = false;
+        serv.write(0);                        //wenn die Tür geöffnet ist, wird sie geschlossen(Der Tür mechanismus muss manuell Geschlossen werden)
+        servstat = false;                     //variable servstat wird auf false gesetzt für Tür geschlossen
     }
   }
 }
