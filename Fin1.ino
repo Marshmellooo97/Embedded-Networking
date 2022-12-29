@@ -39,10 +39,10 @@ bool servstat = false;                  //for saving look status, false = closed
 void setup() {                          //setup()-Funktion alle Initialisierungen und Einstellungen, die für das Programm erforderlich sind.
   Serial.begin(9600);                   //Serielle Verbindung starten
   dht.begin();                          //DHT11 Sensor starten
-  SPI.begin();                          //Initiate SPI Bus
-  mfrc522.PCD_Init();                   //Initiate MFRC522
+  SPI.begin();                          //Initalisiert SPI Bus
+  mfrc522.PCD_Init();                   //Initalisiert MFRC522
   irrecv.enableIRIn();                  //aktiviert den Infarotsensor sodass er bereit ist Daten zu empfangen
-  serv.attach(8);                       //set den Kontoll Pin für den Servo auf Pin 8
+  serv.attach(8);                       //setzt den Kontoll Pin für den Servo auf Pin 8
   pinMode(pwmLuefter, OUTPUT);
   pinMode(ledAutoOrManuell, OUTPUT);
 
@@ -52,8 +52,8 @@ void loop() {
   delay(500); // Pause von x millisec
 
   // Temperatursensor und Feuchtigkeit Auslesen und Speichern
-  luftfeuchtigkeit = dht.readHumidity(); //die Luftfeuchtigkeit auslesen und unter „Luftfeutchtigkeit“ speichern
-  temperatur = dht.readTemperature();//die Temperatur auslesen und unter „Temperatur“ speichern
+  luftfeuchtigkeit = dht.readHumidity();  //die Luftfeuchtigkeit auslesen und unter „Luftfeutchtigkeit“ speichern
+  temperatur = dht.readTemperature();     //die Temperatur auslesen und unter „Temperatur“ speichern
   if(xAutoOrManuell){
     if(temperatur >= 50 and luftfeuchtigkeit >= 80){pwm = 255;
       }else if(temperatur >= 30 and luftfeuchtigkeit >= 0){pwm = 150;
