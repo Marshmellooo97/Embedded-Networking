@@ -22,38 +22,38 @@ Servo serv;
 //Konfiguration RFID Reader         !!!Bitte noch Pins ändern!!!
 #define SS_PIN 10
 #define RST_PIN 9
-MFRC522 mfrc522(SS_PIN, RST_PIN);       // Create MFRC522 instance.
+MFRC522 mfrc522(SS_PIN, RST_PIN);                               // Erstellt MFRC522 Instanz.
 
 // Konfiguration PWM Ausgang/ Ausgang
-int pwmLuefter = 6;
-int ledAutoOrManuell = 7;               //Pin für die LED die Angibt in welchem Modus man sich gerade Befindet
+int pwmLuefter = 6;                                             //Pin für den Lüfer(PIN 6)
+int ledAutoOrManuell = 7;                                       //Pin für die LED, die Angibt in welchem Modus man sich gerade Befindet
 
 // Variablen
-int InfrarotsensorValue = 0;            //Integer für den decodierten und empfangenen command
-float luftfeuchtigkeit = 0;             //Lüftfeuchtigkeit
-float temperatur = 0;                   //Temperatur
-int pwm = 150;                          //Lüftergeschwindikeit
-bool xAutoOrManuell = false;            //Boolean für den Modus in dem Man sich gerade Befindet Auto oder Manuell
-bool servstat = false;                  //for saving look status, false = closed true = open
+int InfrarotsensorValue = 0;                                    //Integer für den decodierten und empfangenen command
+float luftfeuchtigkeit = 0;                                     //Lüftfeuchtigkeit
+float temperatur = 0;                                           //Temperatur
+int pwm = 150;                                                  //Lüftergeschwindikeit
+bool xAutoOrManuell = false;                                    //Boolean für den Modus in dem Man sich gerade Befindet Auto oder Manuell
+bool servstat = false;                                          //Um den Status der Tür zwischenzuspeichern, false Geschlossen, true = Offen 
 
-void setup() {                          //setup()-Funktion alle Initialisierungen und Einstellungen, die für das Programm erforderlich sind.
-  Serial.begin(9600);                   //Serielle Verbindung starten
-  dht.begin();                          //DHT11 Sensor starten
-  SPI.begin();                          //Initalisiert SPI Bus
-  mfrc522.PCD_Init();                   //Initalisiert MFRC522
-  irrecv.enableIRIn();                  //aktiviert den Infarotsensor sodass er bereit ist Daten zu empfangen
-  serv.attach(8);                       //setzt den Kontoll Pin für den Servo auf Pin 8
+void setup() {                                                  //setup()-Funktion alle Initialisierungen und Einstellungen, die für das Programm erforderlich sind.
+  Serial.begin(9600);                                           //Serielle Verbindung starten
+  dht.begin();                                                  //DHT11 Sensor starten
+  SPI.begin();                                                  //Initalisiert SPI Bus
+  mfrc522.PCD_Init();                                           //Initalisiert MFRC522
+  irrecv.enableIRIn();                                          //aktiviert den Infarotsensor sodass er bereit ist Daten zu empfangen
+  serv.attach(8);                                               //setzt den Kontoll Pin für den Servo auf Pin 8
   pinMode(pwmLuefter, OUTPUT);
   pinMode(ledAutoOrManuell, OUTPUT);
 
 }
 
 void loop() {
-  delay(500); // Pause von x millisec
+  delay(500);                                                   // Pause von x millisec
 
   // Temperatursensor und Feuchtigkeit Auslesen und Speichern
-  luftfeuchtigkeit = dht.readHumidity();  //die Luftfeuchtigkeit auslesen und unter „Luftfeutchtigkeit“ speichern
-  temperatur = dht.readTemperature();     //die Temperatur auslesen und unter „Temperatur“ speichern
+  luftfeuchtigkeit = dht.readHumidity();                        //die Luftfeuchtigkeit auslesen und unter „Luftfeutchtigkeit“ speichern
+  temperatur = dht.readTemperature();                           //die Temperatur auslesen und unter „Temperatur“ speichern
   if(xAutoOrManuell){
     if(temperatur >= 50 and luftfeuchtigkeit >= 80){pwm = 255;
       }else if(temperatur >= 30 and luftfeuchtigkeit >= 0){pwm = 150;
