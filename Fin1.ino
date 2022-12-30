@@ -7,7 +7,7 @@
 // Konfiguration Temperatursensor und Feuchtigkeit
 #define DHTPIN 2
 #define DHTTYPE DHT11
-DHT dht(DHTPIN, DHTTYPE); //Der Sensor wird ab jetzt mit „dth“ angesprochen
+DHT dht(DHTPIN, DHTTYPE); //Der Sensor wird ab jetzt mit „dht“ angesprochen
 
 
 // Konfiguration Infrarotsensor und Fernbedinung
@@ -19,7 +19,7 @@ decode_results results;  //decode_results ist ebenfalls eine Bibliothek, Klasse 
 // Konfiguration Servo
 Servo serv;
 
-//Konfiguration RFID Reader         !!!Bitte noch Pins ändern!!!
+//Konfiguration RFID Reader         
 #define SS_PIN 10
 #define RST_PIN 9
 MFRC522 mfrc522(SS_PIN, RST_PIN);                               // Erstellt MFRC522 Instanz.
@@ -34,7 +34,7 @@ float luftfeuchtigkeit = 0;                                     //Lüftfeuchtigk
 float temperatur = 0;                                           //Temperatur
 int pwm = 150;                                                  //Lüftergeschwindikeit
 bool xAutoOrManuell = false;                                    //Boolean für den Modus in dem Man sich gerade Befindet Auto oder Manuell
-bool servstat = false;                                          //Um den Status der Tür zwischenzuspeichern, false Geschlossen, true = Offen 
+bool servstat = false;                                          //Um den Status der Tür zwischenzuspeichern, false = Geschlossen, true = Offen 
 
 void setup() {                                                  //setup()-Funktion alle Initialisierungen und Einstellungen, die für das Programm erforderlich sind.
   Serial.begin(9600);                                           //Serielle Verbindung starten
@@ -43,8 +43,8 @@ void setup() {                                                  //setup()-Funkti
   mfrc522.PCD_Init();                                           //Initalisiert MFRC522
   irrecv.enableIRIn();                                          //aktiviert den Infarotsensor sodass er bereit ist Daten zu empfangen
   serv.attach(8);                                               //setzt den Kontoll Pin für den Servo auf Pin 8
-  pinMode(pwmLuefter, OUTPUT);
-  pinMode(ledAutoOrManuell, OUTPUT);
+  pinMode(pwmLuefter, OUTPUT);                                  //Pin für den Lüfter wird als Ausgang deklariert
+  pinMode(ledAutoOrManuell, OUTPUT);                            //Pin für den Modus wird als Ausgang deklariert
 
 }
 
@@ -54,7 +54,7 @@ void loop() {
   // Temperatursensor und Feuchtigkeit Auslesen und Speichern
   luftfeuchtigkeit = dht.readHumidity();                        //die Luftfeuchtigkeit auslesen und unter „Luftfeutchtigkeit“ speichern
   temperatur = dht.readTemperature();                           //die Temperatur auslesen und unter „Temperatur“ speichern
-  if(xAutoOrManuell){
+  if(xAutoOrManuell){                                           //wenn Automatik True ist dann gibt es eine Automatische regelung
     if(temperatur >= 50 and luftfeuchtigkeit >= 80){pwm = 255;
       }else if(temperatur >= 30 and luftfeuchtigkeit >= 0){pwm = 150;
       }else if(temperatur >= 20){pwm = 100;}
@@ -90,17 +90,17 @@ void loop() {
     }
   }
 
-  analogWrite(pwmLuefter, pwm);
-  Serial.print("PWM: ");
-  Serial.println(pwm);
-  Serial.print("Luft: ");
-  Serial.println(luftfeuchtigkeit);
-  Serial.print("Temp: ");
-  Serial.println(temperatur);
-  Serial.print("Infrarot: ");
-  Serial.println(InfrarotsensorValue);
-  Serial.print("AutoOrManuell: ");
-  Serial.println(xAutoOrManuell);
+  analogWrite(pwmLuefter, pwm);                                 //PWM Wert wird ausgegeben
+  Serial.print("PWM: ");                                        //Printausgabe PWM
+  Serial.println(pwm);                                          //Wert der Varable pwm
+  Serial.print("Luft: ");                                       //Printausgabe Luft
+  Serial.println(luftfeuchtigkeit);                             //Wert der Varable luftfeuchtigkeit
+  Serial.print("Temp: ");                                       //Printausgabe Temp
+  Serial.println(temperatur);                                   //Wert der Varable temperatur
+  Serial.print("Infrarot: ");                                   //Printausgabe Infrarotwert
+  Serial.println(InfrarotsensorValue);                          //Wert der Varable InfrarotsensorValue
+  Serial.print("AutoOrManuell: ");                              //Printausgabe AutoOrManuell
+  Serial.println(xAutoOrManuell);                               //Wert der Varable xAutoOrManuell
 
   if(xAutoOrManuell){                                           //Dient zur visuellen Bestätigung in welchem Modus wir uns Befinden
     digitalWrite(ledAutoOrManuell, HIGH);                       //falls wir uns im Auto Modus Befinden wird der PIN 7 auf HIGH gesetzt (Led leuchtet)

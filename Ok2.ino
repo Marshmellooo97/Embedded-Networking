@@ -28,6 +28,7 @@ float temperatur = 0;
 int pwm = 150;
 bool xAutoOrManuell = false;
 
+
 void setup() {
   Serial.begin(9600); //Serielle Verbindung starten
   dht.begin(); //DHT11 Sensor starten
